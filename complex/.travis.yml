@@ -3,33 +3,33 @@ services:
   - docker
 
 before_install:
-  - docker build -t stephengrider/react-test -f ./client/Dockerfile.dev ./client
+  - docker build -t wayming/react-test -f ./client/Dockerfile.dev ./client
 
 script:
-  - docker run stephengrider/react-test npm test -- --coverage
+  - docker run wayming/react-test npm test -- --coverage
 
 after_success:
-  - docker build -t stephengrider/multi-client ./client
-  - docker build -t stephengrider/multi-nginx ./nginx
-  - docker build -t stephengrider/multi-server ./server
-  - docker build -t stephengrider/multi-worker ./worker
+  - docker build -t wayming/multi-client ./client
+  - docker build -t wayming/multi-nginx ./nginx
+  - docker build -t wayming/multi-server ./server
+  - docker build -t wayming/multi-worker ./worker
   # Log in to the docker CLI
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
   # Take those images and push them to docker hub
-  - docker push stephengrider/multi-client
-  - docker push stephengrider/multi-nginx
-  - docker push stephengrider/multi-server
-  - docker push stephengrider/multi-worker
+  - docker push wayming/multi-client
+  - docker push wayming/multi-nginx
+  - docker push wayming/multi-server
+  - docker push wayming/multi-worker
 
 deploy:
   provider: elasticbeanstalk
-  region: us-west-1
-  app: multi-docker
-  env: MultiDocker-env
-  bucket_name: elasticbeanstalk-us-west-1-306476627547
-  bucket_path: docker-multi
+  region: ap-southeast-2
+  app: docker-node
+  env: DockerNode-env
+  bucket_name: elb-docker-node
+  bucket_path: docker-node
   on:
     branch: master
-  access_key_id: $AWS_ACCESS_KEY
+  access_key_id: $AWS_ACCESS_KEY_ID
   secret_access_key:
     secure: $AWS_SECRET_KEY
